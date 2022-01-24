@@ -1,0 +1,7 @@
+{
+  "name": "ionnews",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
