@@ -13,29 +13,6 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-grid fixed>
-    <ion-row>
-      <ion-col *ngFor="let article of articles">
-        <ion-card>
-
-          <ion-card-subtitle class="ion-margin">
-            <span class="article-source-name">
-              {{ article.source.name }}
-            </span>
-          </ion-card-subtitle>
-
-          <ion-card-title class="ion-padding-horizontal ion-margin-bottom">
-            {{ article.title }}
-          </ion-card-title>
-
-          <ion-img *ngIf="article.urlToImage" [src]="article.urlToImage"></ion-img>
-          
-          <ion-card-content class="article.description">
-            <p>{{ article.description }}</p>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <app-articles [articles]="articles"></app-articles>
 
 </ion-content>
