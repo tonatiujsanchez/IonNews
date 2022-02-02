@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NewsService } from '../../services/news.service';
 import { Article } from '../../interfaces/index';
+import { IonInfiniteScroll } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab2',
@@ -9,26 +10,36 @@ import { Article } from '../../interfaces/index';
 })
 export class Tab2Page implements OnInit {
 
+  @ViewChild(IonInfiniteScroll, { static: true }) infiniteScroll: IonInfiniteScroll;
+
   public categories: string[] = [ 'health', 'business', 'entertainment', 'science', 'sports', 'technology' ];
   public SelectedCategory: string = this.categories[0];
   public articles: Article[] = [];
-  constructor( private NewsSvc: NewsService ) {}
 
-  ngOnInit(): void {
-    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-    //Add 'implements OnInit' to the class.
-    this.getTopHeadlinesByCategory();
+  public categoriesInfiniteScroll ={
 
-    
   }
 
-  segmentChanged( category ){
-    this.SelectedCategory = category.detail.value;
+  constructor( private newsSvc: NewsService ) {}
+
+  ngOnInit(): void {
+
+    this.infiniteScrollCheck();
     this.getTopHeadlinesByCategory();    
   }
 
+  
+  segmentChanged( category ){
+    this.SelectedCategory = category.detail.value;
+    
+    this.infiniteScrollCheck();
+    this.getTopHeadlinesByCategory();        
+  }
+
+
   getTopHeadlinesByCategory(){
-    this.NewsSvc.getTopHeadlinesByCategory( this.SelectedCategory )
+
+    this.newsSvc.getTopHeadlinesByCategory( this.SelectedCategory )
       .subscribe( articles => {
 
         this.articles = [...articles]
@@ -36,15 +47,59 @@ export class Tab2Page implements OnInit {
       })
   }
 
-  loadData( event ){
-    console.log( event );
 
-    this.NewsSvc.getTopHeadlinesByCategory( this.SelectedCategory, true )
+  loadData(){
+  
+    this.newsSvc.getTopHeadlinesByCategory( this.SelectedCategory, true )
       .subscribe( articles => {
+     
+        
+        if( articles.length === this.articles.length ){
+          this.categoriesInfiniteScroll[this.SelectedCategory].infiniteScrollDisabled = true;
+          this.infiniteScrollCheck();
+          return;
+        }
       
         this.articles = articles;
-        event.target.complete();  
+        this.infiniteScroll.complete();
       
       })
   }
+
+
+  infiniteScrollCheck(){
+    if( !(Object.keys( this.categoriesInfiniteScroll ).includes( this.SelectedCategory ) ) ){
+      this.categoriesInfiniteScroll[this.SelectedCategory] = {
+        infiniteScrollDisabled: false,
+      };
+    }
+    
+    this.infiniteScroll.disabled = this.categoriesInfiniteScroll[this.SelectedCategory].infiniteScrollDisabled;
+    
+  }
+
+/*
+loadData( event ){
+
+  this.newsSvc.getTopHeadlinesByCategory( this.SelectedCategory, true )
+    .subscribe( articles => {
+      event.target.disabled = false;
+      
+      console.log( 'articles',articles.length );
+      console.log( 'this.articles ',this.articles.length );
+      
+      
+      if( articles.length === this.articles.length ){
+        event.target.disabled = true;
+        return;
+      }
+    
+      this.articles = articles;
+      event.target.complete();  
+    
+    })
 }
+*/
+}
+
+

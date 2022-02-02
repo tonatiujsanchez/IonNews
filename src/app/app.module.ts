@@ -8,6 +8,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
+import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
+
 @NgModule({
   declarations: [
     AppComponent
@@ -22,8 +24,9 @@ import { AppComponent } from './app.component';
   providers: [
     { 
       provide: RouteReuseStrategy, 
-      useClass: IonicRouteStrategy 
-    }
+      useClass: IonicRouteStrategy
+    },
+    InAppBrowser
   ],
   bootstrap: [
     AppComponent

@@ -61,24 +61,27 @@ export class NewsService {
   // Cargar más
   private getArticlesByCategory( category: string ): Observable<Article[]> {
 
-    if( !(Object.keys( this.ArticlesByCategoryAndPage ).includes( category )) ){
+    if( Object.keys( this.ArticlesByCategoryAndPage ).includes( category ) ){
+      // Si existe
+
+    }else{
       // No exite
       this.ArticlesByCategoryAndPage[category] = {
         page: 0,
         articles: []
       }
-
     }
     
     const page = this.ArticlesByCategoryAndPage[category].page + 1;
 
-    return this.executeQuery<NewsResponse>( `/top-headlines?category=${ category }&page${ page }` )
+    return this.executeQuery<NewsResponse>( `/top-headlines?category=${ category }&page=${ page }` )
       .pipe(
-        map( ({ articles }) => {
-          console.log( articles, page );
-          
-          if( articles.length === 0 ) return this.ArticlesByCategoryAndPage[ category ].articles;
+        map( ({ articles }: NewsResponse) => {
 
+
+          if( articles.length === 0 ) {
+            return this.ArticlesByCategoryAndPage[ category ].articles;
+          }
 
           this.ArticlesByCategoryAndPage[ category ] = {
             page: page,
@@ -95,8 +98,6 @@ export class NewsService {
 
 
   private executeQuery<T>( endpoint: string ){
-
-    console.log('Se hizo una petición');
 
     return this.http.get<T>( `${ apiUrl }${ endpoint }`, {
       params: {
