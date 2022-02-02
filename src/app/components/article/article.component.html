@@ -7,7 +7,7 @@
         <span class="article-source-name">{{ article.source.name }}</span>
       </ion-col>
       <ion-col class="ion-text-end" >
-        <ion-button fill="clear" size="small">
+        <ion-button (click)="onOpenMenu()" fill="clear" size="small">
           <ion-icon name="ellipsis-vertical-outline" color="primary"></ion-icon>
         </ion-button>
       </ion-col>
