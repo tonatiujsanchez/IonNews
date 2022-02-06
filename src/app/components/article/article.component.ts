@@ -1,12 +1,13 @@
 import { Component, Input } from '@angular/core';
-import { Article } from '../../interfaces/index';
+import { ActionSheetController, ActionSheetButton, Platform } from '@ionic/angular';
 
-import { ActionSheetButton, Platform } from '@ionic/angular';
 import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 import { SocialSharing } from '@awesome-cordova-plugins/social-sharing/ngx';
 
 
-import { ActionSheetController } from '@ionic/angular';
+import { StorageService } from '../../services/storage.service';
+
+import { Article } from '../../interfaces/index';
 
 @Component({
   selector: 'app-article',
@@ -22,7 +23,8 @@ export class ArticleComponent  {
     private iab: InAppBrowser,
     private platform: Platform,
     private actionSheetCtrl: ActionSheetController,
-    private socialSharing: SocialSharing
+    private socialSharing: SocialSharing,
+    private StorageSvc: StorageService
   ) { }
 
   openArticle(){     
@@ -43,10 +45,12 @@ export class ArticleComponent  {
 
   async onOpenMenu(){
 
+    const articleIsFavotite = this.StorageSvc.articleIsFavorite( this.article );
+
     const actionSheetButtons: ActionSheetButton[] = [
       {
-        text: 'Favorito',
-        icon: 'heart-outline',
+        text: articleIsFavotite ? 'Remover favorito' :'Agregar favorito' ,
+        icon: articleIsFavotite ? 'heart' :'heart-outline' ,
         handler: ()=> this.onToggleFavorite()
       },
       {
@@ -90,8 +94,7 @@ export class ArticleComponent  {
   }
 
   onToggleFavorite(){
-    console.log('Toggle favorite');
-    
+    this.StorageSvc.saveOrRemoveArticle( this.article );
   }
 
 
