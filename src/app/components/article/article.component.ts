@@ -65,7 +65,7 @@ export class ArticleComponent  {
       handler: () => this.onShareArticle()
     }
 
-    if( this.platform.is('capacitor') ){
+    if( this.platform.is('capacitor') || navigator.share ){
       actionSheetButtons.unshift( shareButton );
     }
 
@@ -82,14 +82,32 @@ export class ArticleComponent  {
 
 
   onShareArticle(){
+
     const  { title, source, url } = this.article;
-    
-    this.socialSharing.share(
-      title,
-      source.name,
-      null, 
-      url
-    );
+
+    if (this.platform.is('capacitor') || this.platform.is('cordova')) {
+      
+      this.socialSharing.share(
+        title,
+        source.name,
+        null, 
+        url
+      );
+
+    } else {
+
+      if (navigator.share) {
+        navigator.share({
+          title: title,
+          text: source.name,
+          url: url,
+        })
+          .then(() => console.log('Successful share'))
+          .catch((error) => console.log('Error sharing', error));
+      }
+
+    }
+
     
   }
 

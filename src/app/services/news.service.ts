@@ -6,6 +6,8 @@ import { NewsResponse, Article, ArticlesByCategoryAndPage } from '../interfaces/
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { storedArticlesByCategory } from '../data/mock-news';
+
 const apiKey = environment.apiKey;
 const apiUrl = environment.apiUrl;
 
@@ -17,12 +19,8 @@ export class NewsService {
 
   country = 'us';
 
-  private ArticlesByCategoryAndPage: ArticlesByCategoryAndPage = {
-    // business: {
-    //   page: 0,
-    //   articles: []
-    // }
-  }
+  private ArticlesByCategoryAndPage: ArticlesByCategoryAndPage = storedArticlesByCategory;
+  // private ArticlesByCategoryAndPage: ArticlesByCategoryAndPage = {}
 
   
 
@@ -45,6 +43,8 @@ export class NewsService {
 
   getTopHeadlinesByCategory( category: string, loadMore: boolean = false ):Observable<Article[]> {
     
+    // Retonarnamos Data local por las limintaciones de API
+    return of( this.ArticlesByCategoryAndPage[ category ].articles );
 
     if( loadMore ){
       return this.getArticlesByCategory( category );
